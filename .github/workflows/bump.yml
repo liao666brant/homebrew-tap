@@ -17,5 +17,7 @@ jobs:
       - uses: Homebrew/actions/bump-packages@main
         with:
           token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
-          formulae: bsk
+          formulae: >
+            bsk
+            cc-switch
           fork: false
