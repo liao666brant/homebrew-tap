@@ -1,21 +1,26 @@
 # Linuxbrew Tap
 
-这个 Tap 提供适用于 Linux 的第三方 Homebrew Formula。
+这个 Tap 提供适用于 Linux 的第三方 Homebrew Formula。源码仓库：[liao666brant/homebrew-tap](https://github.com/liao666brant/homebrew-tap)。
 
 ## BrowserSkill
 
-将仓库发布到 GitHub 时，仓库名应为 `homebrew-linuxbrew-tap`。安装命令中的
-`<github-user>` 需要替换为实际的 GitHub 用户名：
+从 GitHub 安装：
 
 ```bash
-brew install <github-user>/linuxbrew-tap/bsk
+brew install liao666brant/homebrew-tap/bsk
 ```
 
-本地开发时，仓库至少有一次提交后，可通过文件 URL 注册临时 Tap：
+该命令会自动注册 Tap。也可先手动注册：
 
 ```bash
-brew tap local/linuxbrew-tap "file://$(pwd)"
-brew install local/linuxbrew-tap/bsk
+brew tap liao666brant/homebrew-tap
+```
+
+本地开发时，可通过文件 URL 注册临时 Tap：
+
+```bash
+brew tap local/tap "file://$(pwd)"
+brew install local/tap/bsk
 ```
 
 安装完成后，将 BrowserSkill skill 注册到当前用户环境：
