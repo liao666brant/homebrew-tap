@@ -25,3 +25,9 @@ bsk install-skill
 ```
 
 BrowserSkill 还需要在 Chromium 浏览器中安装并启用配套扩展。
+
+## 自动更新
+
+`.github/workflows/bump.yml` 会在每天北京时间 06:00 检查 BrowserSkill 更新，并在有新版本时创建 Formula 更新 PR；也可在 GitHub Actions 页面手动运行。
+
+启用前，在仓库的 **Settings → Secrets and variables → Actions** 中添加 `HOMEBREW_GITHUB_API_TOKEN`，其值为具备仓库写入和创建 PR 权限的 GitHub 个人访问令牌。
