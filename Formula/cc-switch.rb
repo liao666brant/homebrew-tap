@@ -15,19 +15,21 @@ class CcSwitch < Formula
 
   resource "binary" do
     on_arm do
-      url "https://github.com/farion1231/cc-switch/releases/download/v3.17.0/CC-Switch-v3.17.0-Linux-arm64.AppImage"
-      sha256 "9c7da2e130e4fff94c385f0a7b470e9fea3704325d1f8380f0ff2d865fc61725"
+      url "https://github.com/farion1231/cc-switch/releases/download/v3.17.0/CC-Switch-v3.17.0-Linux-arm64.deb", using: :nounzip
+      sha256 "8b1b2ba9cca007d0b5070670b7d8904d45789402f5ab915ba9d619cad3621052"
     end
 
     on_intel do
-      url "https://github.com/farion1231/cc-switch/releases/download/v3.17.0/CC-Switch-v3.17.0-Linux-x86_64.AppImage"
-      sha256 "f4ee9d1dcc0015de583c9f5e3b3436c7a351f7e781dbb746fbba96525b129eb9"
+      url "https://github.com/farion1231/cc-switch/releases/download/v3.17.0/CC-Switch-v3.17.0-Linux-x86_64.deb", using: :nounzip
+      sha256 "1d457532c5bc39fd0189b47c159e7d4b596c3244ceb38bdc89b1f6cdc9f51e7a"
     end
   end
 
   def install
     resource("binary").stage do
-      bin.install Dir["*.AppImage"].first => "cc-switch"
+      system "ar", "x", Dir["*.deb"].first
+      system "tar", "-xzf", "data.tar.gz"
+      bin.install "usr/bin/cc-switch"
     end
   end
 
