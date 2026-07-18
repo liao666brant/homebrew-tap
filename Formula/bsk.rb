@@ -1,8 +1,15 @@
 class Bsk < Formula
   desc "Connect AI agents to a real, logged-in Chromium browser"
   homepage "https://github.com/Tencent/BrowserSkill"
+  url "https://github.com/Tencent/BrowserSkill/archive/refs/tags/cli-v0.1.7.tar.gz"
   version "0.1.7"
+  sha256 "bf6e953d72e233625a7089dd62f21cd1b182f833fddabb3ec9ed89884f5a822a"
   license "MIT"
+
+  livecheck do
+    url :stable
+    regex(/^cli-v?(\d+(?:\.\d+)+)$/i)
+  end
 
   depends_on :linux
 

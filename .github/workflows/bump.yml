@@ -1,0 +1,21 @@
+name: Bump Formulae
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+      timezone: Asia/Shanghai
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Homebrew/actions/setup-homebrew@main
+      - uses: Homebrew/actions/bump-packages@main
+        with:
+          token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+          formulae: bsk
+          fork: false
