@@ -1,8 +1,8 @@
 class CcSwitch < Formula
   desc "All-in-one desktop assistant for AI coding tools"
   homepage "https://github.com/farion1231/cc-switch"
-  url "https://github.com/farion1231/cc-switch/archive/refs/tags/v3.17.0.tar.gz"
-  sha256 "8ae7c878c7de955ff9bd1f13dc22ff9b680267b889ec9b285f62aae03142ab40"
+  url "https://github.com/farion1231/cc-switch/archive/refs/tags/v3.18.0.tar.gz"
+  sha256 "0dee76840b8e36ce143c31d74471b60fb1b11607bce51ae0bce1b276aad6f38f"
   license "MIT"
 
   livecheck do
