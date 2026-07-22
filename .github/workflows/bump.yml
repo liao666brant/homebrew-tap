@@ -27,7 +27,7 @@ jobs:
           version="${tag#v}"
           current="$(ruby -ne 'puts $1 if /refs\/tags\/v([0-9.]+)\.tar\.gz/' "$formula")"
 
-          if [[ "$current" == "$version" ]] && rg -q "releases/download/v$version/CC-Switch-v$version-Linux-x86_64.deb" "$formula"; then
+          if [[ "$current" == "$version" ]] && grep -q "releases/download/v$version/CC-Switch-v$version-Linux-x86_64.deb" "$formula"; then
             echo "cc-switch is already $version"
             exit 0
           fi
