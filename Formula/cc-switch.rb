@@ -14,13 +14,13 @@ class CcSwitch < Formula
 
   resource "binary" do
     on_arm do
-      url "https://github.com/farion1231/cc-switch/releases/download/v3.17.0/CC-Switch-v3.17.0-Linux-arm64.deb", using: :nounzip
-      sha256 "8b1b2ba9cca007d0b5070670b7d8904d45789402f5ab915ba9d619cad3621052"
+      url "https://github.com/farion1231/cc-switch/releases/download/v3.18.0/CC-Switch-v3.18.0-Linux-arm64.deb", using: :nounzip
+      sha256 "5c549027e87adf27bd8c6d7b1ff17d5c12fe0e74fa2757d902bb5b06f073c66a"
     end
 
     on_intel do
-      url "https://github.com/farion1231/cc-switch/releases/download/v3.17.0/CC-Switch-v3.17.0-Linux-x86_64.deb", using: :nounzip
-      sha256 "1d457532c5bc39fd0189b47c159e7d4b596c3244ceb38bdc89b1f6cdc9f51e7a"
+      url "https://github.com/farion1231/cc-switch/releases/download/v3.18.0/CC-Switch-v3.18.0-Linux-x86_64.deb", using: :nounzip
+      sha256 "3c8aaaa21bdb57e6a4e9ed6f9e84f36f486aed5c5520bfaa31498207abe8f141"
     end
   end
 
