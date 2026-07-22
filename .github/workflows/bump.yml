@@ -15,10 +15,69 @@ jobs:
     steps:
       - uses: Homebrew/actions/setup-homebrew@main
       - uses: Homebrew/actions/git-user-config@main
+      - name: Bump cc-switch Linux resources
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          formula="Formula/cc-switch.rb"
+          tag="$(gh api repos/farion1231/cc-switch/releases/latest --jq .tag_name)"
+          version="${tag#v}"
+          current="$(ruby -ne 'puts $1 if /refs\/tags\/v([0-9.]+)\.tar\.gz/' "$formula")"
+
+          if [[ "$current" == "$version" ]] && rg -q "releases/download/v$version/CC-Switch-v$version-Linux-x86_64.deb" "$formula"; then
+            echo "cc-switch is already $version"
+            exit 0
+          fi
+
+          tmp="$(mktemp -d)"
+          source_url="https://github.com/farion1231/cc-switch/archive/refs/tags/v$version.tar.gz"
+          arm_url="https://github.com/farion1231/cc-switch/releases/download/v$version/CC-Switch-v$version-Linux-arm64.deb"
+          intel_url="https://github.com/farion1231/cc-switch/releases/download/v$version/CC-Switch-v$version-Linux-x86_64.deb"
+
+          curl -fsSL -o "$tmp/source.tar.gz" "$source_url"
+          curl -fsSL -o "$tmp/arm64.deb" "$arm_url"
+          curl -fsSL -o "$tmp/x86_64.deb" "$intel_url"
+
+          source_sha="$(sha256sum "$tmp/source.tar.gz" | cut -d' ' -f1)"
+          arm_sha="$(sha256sum "$tmp/arm64.deb" | cut -d' ' -f1)"
+          intel_sha="$(sha256sum "$tmp/x86_64.deb" | cut -d' ' -f1)"
+
+          python3 - "$formula" "$version" "$source_sha" "$arm_sha" "$intel_sha" <<'PY'
+          import re
+          import sys
+
+          path, version, source_sha, arm_sha, intel_sha = sys.argv[1:]
+          text = open(path, encoding="utf-8").read()
+          text = re.sub(r'https://github\.com/farion1231/cc-switch/archive/refs/tags/v[0-9.]+\.tar\.gz',
+                        f'https://github.com/farion1231/cc-switch/archive/refs/tags/v{version}.tar.gz', text)
+          text = re.sub(r'(archive/refs/tags/v[0-9.]+\.tar\.gz"\n  sha256 ")[0-9a-f]{64}',
+                        r'\1' + source_sha, text)
+          text = re.sub(r'https://github\.com/farion1231/cc-switch/releases/download/v[0-9.]+/CC-Switch-v[0-9.]+-Linux-arm64\.deb',
+                        f'https://github.com/farion1231/cc-switch/releases/download/v{version}/CC-Switch-v{version}-Linux-arm64.deb', text)
+          text = re.sub(r'(Linux-arm64\.deb", using: :nounzip\n      sha256 ")[0-9a-f]{64}',
+                        r'\1' + arm_sha, text)
+          text = re.sub(r'https://github\.com/farion1231/cc-switch/releases/download/v[0-9.]+/CC-Switch-v[0-9.]+-Linux-x86_64\.deb',
+                        f'https://github.com/farion1231/cc-switch/releases/download/v{version}/CC-Switch-v{version}-Linux-x86_64.deb', text)
+          text = re.sub(r'(Linux-x86_64\.deb", using: :nounzip\n      sha256 ")[0-9a-f]{64}',
+                        r'\1' + intel_sha, text)
+          open(path, "w", encoding="utf-8").write(text)
+          PY
+
+          ruby -c "$formula"
+
+          if git diff --quiet -- "$formula"; then
+            echo "cc-switch is already $version"
+            exit 0
+          fi
+
+          git add "$formula"
+          git commit -m "cc-switch $version"
+          git push "https://x-access-token:$HOMEBREW_GITHUB_API_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:main
       - uses: Homebrew/actions/bump-packages@main
         with:
           token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
-          formulae: >
-            bsk
-            cc-switch
+          formulae: bsk
           fork: false
