@@ -25,13 +25,6 @@ jobs:
           formula="Formula/cc-switch.rb"
           tag="$(gh api repos/farion1231/cc-switch/releases/latest --jq .tag_name)"
           version="${tag#v}"
-          current="$(ruby -ne 'puts $1 if /refs\/tags\/v([0-9.]+)\.tar\.gz/' "$formula")"
-
-          if [[ "$current" == "$version" ]] && grep -q "releases/download/v$version/CC-Switch-v$version-Linux-x86_64.deb" "$formula"; then
-            echo "cc-switch is already $version"
-            exit 0
-          fi
-
           tmp="$(mktemp -d)"
           source_url="https://github.com/farion1231/cc-switch/archive/refs/tags/v$version.tar.gz"
           arm_url="https://github.com/farion1231/cc-switch/releases/download/v$version/CC-Switch-v$version-Linux-arm64.deb"
@@ -54,15 +47,15 @@ jobs:
           text = re.sub(r'https://github\.com/farion1231/cc-switch/archive/refs/tags/v[0-9.]+\.tar\.gz',
                         f'https://github.com/farion1231/cc-switch/archive/refs/tags/v{version}.tar.gz', text)
           text = re.sub(r'(archive/refs/tags/v[0-9.]+\.tar\.gz"\n  sha256 ")[0-9a-f]{64}',
-                        r'\1' + source_sha, text)
+                        lambda m: m.group(1) + source_sha, text)
           text = re.sub(r'https://github\.com/farion1231/cc-switch/releases/download/v[0-9.]+/CC-Switch-v[0-9.]+-Linux-arm64\.deb',
                         f'https://github.com/farion1231/cc-switch/releases/download/v{version}/CC-Switch-v{version}-Linux-arm64.deb', text)
           text = re.sub(r'(Linux-arm64\.deb", using: :nounzip\n      sha256 ")[0-9a-f]{64}',
-                        r'\1' + arm_sha, text)
+                        lambda m: m.group(1) + arm_sha, text)
           text = re.sub(r'https://github\.com/farion1231/cc-switch/releases/download/v[0-9.]+/CC-Switch-v[0-9.]+-Linux-x86_64\.deb',
                         f'https://github.com/farion1231/cc-switch/releases/download/v{version}/CC-Switch-v{version}-Linux-x86_64.deb', text)
           text = re.sub(r'(Linux-x86_64\.deb", using: :nounzip\n      sha256 ")[0-9a-f]{64}',
-                        r'\1' + intel_sha, text)
+                        lambda m: m.group(1) + intel_sha, text)
           open(path, "w", encoding="utf-8").write(text)
           PY
 
