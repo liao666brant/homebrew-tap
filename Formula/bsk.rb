@@ -14,13 +14,13 @@ class Bsk < Formula
 
   resource "binary" do
     on_arm do
-      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.1.7/bsk-v0.1.7-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "b7f117644a4f018824ccb0c1ebf414c1985febfef0c0b58e453dcfcce37ad766"
+      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.1.8/bsk-v0.1.8-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "55a4c90e6ddc96ee084c90339995d4c2ee87eb6bc5aec515668a447dce126fd2"
     end
 
     on_intel do
-      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.1.7/bsk-v0.1.7-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "da9f9cedbd7d1010887143760cf24cf960fd4a5a8536ac59ec50c546c1c532ac"
+      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.1.8/bsk-v0.1.8-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "9e06dbfcac9517e6d8fd6a8b9c829a9c077303b18e02962faf5ce04a7ea7aa3e"
     end
   end
 
