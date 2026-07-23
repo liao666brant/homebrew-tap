@@ -23,9 +23,11 @@ jobs:
           set -euo pipefail
 
           formula="Formula/cc-switch.rb"
-          tag="$(gh api repos/farion1231/cc-switch/releases/latest --jq .tag_name)"
+          tag="$(gh api 'repos/farion1231/cc-switch/releases' --jq '[.[] | select(.tag_name | startswith("v"))][0].tag_name')"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid tag: $tag"; exit 1; }
           version="${tag#v}"
           tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
           source_url="https://github.com/farion1231/cc-switch/archive/refs/tags/v$version.tar.gz"
           arm_url="https://github.com/farion1231/cc-switch/releases/download/v$version/CC-Switch-v$version-Linux-arm64.deb"
           intel_url="https://github.com/farion1231/cc-switch/releases/download/v$version/CC-Switch-v$version-Linux-x86_64.deb"
@@ -68,9 +70,63 @@ jobs:
 
           git add "$formula"
           git commit -m "cc-switch $version"
+          git pull --rebase "https://x-access-token:$HOMEBREW_GITHUB_API_TOKEN@github.com/$GITHUB_REPOSITORY.git" main
           git push "https://x-access-token:$HOMEBREW_GITHUB_API_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:main
-      - uses: Homebrew/actions/bump-packages@main
-        with:
-          token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
-          formulae: bsk
-          fork: false
+          rm -rf "$tmp"
+      - name: Bump bsk Linux resources
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          formula="Formula/bsk.rb"
+          tag="$(gh api 'repos/Tencent/BrowserSkill/releases' --jq '[.[] | select(.tag_name | startswith("cli-v"))][0].tag_name')"
+          [[ "$tag" =~ ^cli-v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid tag: $tag"; exit 1; }
+          version="${tag#cli-v}"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          source_url="https://github.com/Tencent/BrowserSkill/archive/refs/tags/cli-v$version.tar.gz"
+          arm_url="https://github.com/Tencent/BrowserSkill/releases/download/cli-v$version/bsk-v$version-aarch64-unknown-linux-musl.tar.gz"
+          intel_url="https://github.com/Tencent/BrowserSkill/releases/download/cli-v$version/bsk-v$version-x86_64-unknown-linux-musl.tar.gz"
+
+          curl -fsSL -o "$tmp/source.tar.gz" "$source_url"
+          curl -fsSL -o "$tmp/aarch64.tar.gz" "$arm_url"
+          curl -fsSL -o "$tmp/x86_64.tar.gz" "$intel_url"
+
+          source_sha="$(sha256sum "$tmp/source.tar.gz" | cut -d' ' -f1)"
+          arm_sha="$(sha256sum "$tmp/aarch64.tar.gz" | cut -d' ' -f1)"
+          intel_sha="$(sha256sum "$tmp/x86_64.tar.gz" | cut -d' ' -f1)"
+
+          python3 - "$formula" "$version" "$source_sha" "$arm_sha" "$intel_sha" <<'PY'
+          import re
+          import sys
+
+          path, version, source_sha, arm_sha, intel_sha = sys.argv[1:]
+          text = open(path, encoding="utf-8").read()
+          text = re.sub(r'https://github\.com/Tencent/BrowserSkill/archive/refs/tags/cli-v[0-9.]+\.tar\.gz',
+                        f'https://github.com/Tencent/BrowserSkill/archive/refs/tags/cli-v{version}.tar.gz', text)
+          text = re.sub(r'(cli-v[0-9.]+\.tar\.gz"\n\s+sha256 ")[0-9a-f]{64}',
+                        lambda m: m.group(1) + source_sha, text)
+          text = re.sub(r'https://github\.com/Tencent/BrowserSkill/releases/download/cli-v[0-9.]+/bsk-v[0-9.]+-aarch64-unknown-linux-musl\.tar\.gz',
+                        f'https://github.com/Tencent/BrowserSkill/releases/download/cli-v{version}/bsk-v{version}-aarch64-unknown-linux-musl.tar.gz', text)
+          text = re.sub(r'(aarch64-unknown-linux-musl\.tar\.gz"\n\s+sha256 ")[0-9a-f]{64}',
+                        lambda m: m.group(1) + arm_sha, text)
+          text = re.sub(r'https://github\.com/Tencent/BrowserSkill/releases/download/cli-v[0-9.]+/bsk-v[0-9.]+-x86_64-unknown-linux-musl\.tar\.gz',
+                        f'https://github.com/Tencent/BrowserSkill/releases/download/cli-v{version}/bsk-v{version}-x86_64-unknown-linux-musl.tar.gz', text)
+          text = re.sub(r'(x86_64-unknown-linux-musl\.tar\.gz"\n\s+sha256 ")[0-9a-f]{64}',
+                        lambda m: m.group(1) + intel_sha, text)
+          open(path, "w", encoding="utf-8").write(text)
+          PY
+
+          ruby -c "$formula"
+
+          if git diff --quiet -- "$formula"; then
+            echo "bsk is already $version"
+            exit 0
+          fi
+
+          git add "$formula"
+          git commit -m "bsk $version"
+          git pull --rebase "https://x-access-token:$HOMEBREW_GITHUB_API_TOKEN@github.com/$GITHUB_REPOSITORY.git" main
+          git push "https://x-access-token:$HOMEBREW_GITHUB_API_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:main
