@@ -1,8 +1,8 @@
 class CcSwitch < Formula
   desc "All-in-one desktop assistant for AI coding tools"
   homepage "https://github.com/farion1231/cc-switch"
-  url "https://github.com/farion1231/cc-switch/archive/refs/tags/v4.0.6.tar.gz"
-  sha256 "92a8d59a75b8f34376298f502357ab6a8469cee02d9f7ff99c76ef5336e5ec20"
+  url "https://github.com/farion1231/cc-switch/archive/refs/tags/v4.0.8.tar.gz"
+  sha256 "6119e7c5bec84aad5356d4193358872f0cc776c56660e0ba59b5af092fbb69d3"
   license "MIT"
 
   livecheck do
@@ -14,13 +14,13 @@ class CcSwitch < Formula
 
   resource "binary" do
     on_arm do
-      url "https://github.com/farion1231/cc-switch/releases/download/v4.0.6/CC-Switch-v4.0.6-Linux-arm64.deb", using: :nounzip
-      sha256 "4959fe321507c8b3e9d98eb2b78aa5dfb418bf6fffb9f3667306377cbf231890"
+      url "https://github.com/farion1231/cc-switch/releases/download/v4.0.8/CC-Switch-v4.0.8-Linux-arm64.deb", using: :nounzip
+      sha256 "eb20d50c21461a946767dc600b8d39335f8195a0d275d2d8145d677204388128"
     end
 
     on_intel do
-      url "https://github.com/farion1231/cc-switch/releases/download/v4.0.6/CC-Switch-v4.0.6-Linux-x86_64.deb", using: :nounzip
-      sha256 "01229013a69007a2366a90f5bff702e0df9cf0533b8ae90c8cbf2497aa2cc80e"
+      url "https://github.com/farion1231/cc-switch/releases/download/v4.0.8/CC-Switch-v4.0.8-Linux-x86_64.deb", using: :nounzip
+      sha256 "24b09830abb8bc1973a4f2bf0a43203a7fb8fdca9be09bbc5ddcf576e2bb3db5"
     end
   end
 
