@@ -1,8 +1,8 @@
 class Bsk < Formula
   desc "Connect AI agents to a real, logged-in Chromium browser"
   homepage "https://github.com/Tencent/BrowserSkill"
-  url "https://github.com/Tencent/BrowserSkill/archive/refs/tags/cli-v0.4.2.tar.gz"
-  sha256 "87305618a28bc1560e59e093abe37de17f19d9d897acb6bf9a21e821100ef0f9"
+  url "https://github.com/Tencent/BrowserSkill/archive/refs/tags/cli-v0.5.0.tar.gz"
+  sha256 "641451a4221f1d8563517c642bbd94506761e690ac0970d1554a8a490581ec0a"
   license "MIT"
 
   livecheck do
@@ -14,13 +14,13 @@ class Bsk < Formula
 
   resource "binary" do
     on_arm do
-      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.4.2/bsk-v0.4.2-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "f965474d8ad61cfb819b5123f4355135ee2afa9c4f742bbbe9e4f463dc7d5fa3"
+      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.5.0/bsk-v0.5.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "7db0665a2bdc0c9287f8806ab572a257ffcfb849e27291b1140bd46e21a6a34a"
     end
 
     on_intel do
-      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.4.2/bsk-v0.4.2-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "5286ccdc104e52200c47b4a492c6e043069e5bf1e638db8fdbde62a9d4939979"
+      url "https://github.com/Tencent/BrowserSkill/releases/download/cli-v0.5.0/bsk-v0.5.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "4e4f14183511f8d03487cad93549c9db8ea10360ac01a9aa35876b184bc3ea07"
     end
   end
 
